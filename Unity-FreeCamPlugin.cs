@@ -16,38 +16,38 @@ namespace Unity_FreeCam
 
         private static new ManualLogSource Logger;
 
-        private static ConfigEntry<KeyboardShortcut> configToggleFreecamKey;
-        private static ConfigEntry<KeyboardShortcut> configSelectCameraKey;
-        private static ConfigEntry<KeyboardShortcut> configToggleGameFreezeKey;
-        private static ConfigEntry<KeyboardShortcut> configResetPositionKey;
-        private static ConfigEntry<KeyboardShortcut> configResetRotationKey;
-        private static ConfigEntry<KeyboardShortcut> configResetViewKey;
+        private static ConfigEntry<KeyCode> configToggleFreecamKey;
+        private static ConfigEntry<KeyCode> configSelectCameraKey;
+        private static ConfigEntry<KeyCode> configToggleGameFreezeKey;
+        private static ConfigEntry<KeyCode> configResetPositionKey;
+        private static ConfigEntry<KeyCode> configResetRotationKey;
+        private static ConfigEntry<KeyCode> configResetViewKey;
 
-        private static ConfigEntry<KeyboardShortcut> configMoveForwardKey;
-        private static ConfigEntry<KeyboardShortcut> configMoveBackwardKey;
-        private static ConfigEntry<KeyboardShortcut> configMoveLeftKey;
-        private static ConfigEntry<KeyboardShortcut> configMoveRightKey;
-        private static ConfigEntry<KeyboardShortcut> configMoveUpKey;
-        private static ConfigEntry<KeyboardShortcut> configMoveDownKey;
+        private static ConfigEntry<KeyCode> configMoveForwardKey;
+        private static ConfigEntry<KeyCode> configMoveBackwardKey;
+        private static ConfigEntry<KeyCode> configMoveLeftKey;
+        private static ConfigEntry<KeyCode> configMoveRightKey;
+        private static ConfigEntry<KeyCode> configMoveUpKey;
+        private static ConfigEntry<KeyCode> configMoveDownKey;
 
-        private static ConfigEntry<KeyboardShortcut> configRotatePitchForwardKey;
-        private static ConfigEntry<KeyboardShortcut> configRotatePitchBackwardKey;
-        private static ConfigEntry<KeyboardShortcut> configRotateYawLeftKey;
-        private static ConfigEntry<KeyboardShortcut> configRotateYawRightKey;
-        private static ConfigEntry<KeyboardShortcut> configRotateRollCounterClockwiseKey;
-        private static ConfigEntry<KeyboardShortcut> configRotateRollClockwiseKey;
+        private static ConfigEntry<KeyCode> configRotatePitchForwardKey;
+        private static ConfigEntry<KeyCode> configRotatePitchBackwardKey;
+        private static ConfigEntry<KeyCode> configRotateYawLeftKey;
+        private static ConfigEntry<KeyCode> configRotateYawRightKey;
+        private static ConfigEntry<KeyCode> configRotateRollCounterClockwiseKey;
+        private static ConfigEntry<KeyCode> configRotateRollClockwiseKey;
 
-        private static ConfigEntry<KeyboardShortcut> configIncreaseFovKey;
-        private static ConfigEntry<KeyboardShortcut> configDecreaseFovKey;
-        private static ConfigEntry<KeyboardShortcut> configIncreaseNearClipKey;
-        private static ConfigEntry<KeyboardShortcut> configDecreaseNearClipKey;
-        private static ConfigEntry<KeyboardShortcut> configIncreaseFarClipKey;
-        private static ConfigEntry<KeyboardShortcut> configDecreaseFarClipKey;
+        private static ConfigEntry<KeyCode> configIncreaseFovKey;
+        private static ConfigEntry<KeyCode> configDecreaseFovKey;
+        private static ConfigEntry<KeyCode> configIncreaseNearClipKey;
+        private static ConfigEntry<KeyCode> configDecreaseNearClipKey;
+        private static ConfigEntry<KeyCode> configIncreaseFarClipKey;
+        private static ConfigEntry<KeyCode> configDecreaseFarClipKey;
 
-        private static ConfigEntry<KeyboardShortcut> configIncreaseMoveSpeedKey;
-        private static ConfigEntry<KeyboardShortcut> configDecreaseMoveSpeedKey;
-        private static ConfigEntry<KeyboardShortcut> configIncreaseRotationSpeedKey;
-        private static ConfigEntry<KeyboardShortcut> configDecreaseRotationSpeedKey;
+        private static ConfigEntry<KeyCode> configIncreaseMoveSpeedKey;
+        private static ConfigEntry<KeyCode> configDecreaseMoveSpeedKey;
+        private static ConfigEntry<KeyCode> configIncreaseRotationSpeedKey;
+        private static ConfigEntry<KeyCode> configDecreaseRotationSpeedKey;
 
         private static int selectedCameraIndex = 0;
 
@@ -83,43 +83,43 @@ namespace Unity_FreeCam
         {
             Logger = base.Logger;
 
-            configToggleFreecamKey = Config.Bind("Keyboard Shortcuts - Plugin State", "Toggle FreeCam", new KeyboardShortcut(KeyCode.KeypadMultiply));
-            configSelectCameraKey = Config.Bind("Keyboard Shortcuts - Plugin State", "Select Camera", new KeyboardShortcut(KeyCode.KeypadMinus));
-            configToggleGameFreezeKey = Config.Bind("Keyboard Shortcuts - Plugin State", "Toggle Game Freeze", new KeyboardShortcut(KeyCode.KeypadPeriod));
-            configResetPositionKey = Config.Bind("Keyboard Shortcuts - Plugin State", "Reset Camera Position", new KeyboardShortcut(KeyCode.KeypadDivide));
-            configResetRotationKey = Config.Bind("Keyboard Shortcuts - Plugin State", "Reset Camera Rotation", new KeyboardShortcut(KeyCode.KeypadDivide));
-            configResetViewKey = Config.Bind("Keyboard Shortcuts - Plugin State", "Reset Camera View", new KeyboardShortcut(KeyCode.KeypadDivide));
+            configToggleFreecamKey = Config.Bind("Keyboard Shortcuts - Plugin State", "Toggle FreeCam", KeyCode.KeypadMultiply);
+            configSelectCameraKey = Config.Bind("Keyboard Shortcuts - Plugin State", "Select Camera", KeyCode.KeypadMinus);
+            configToggleGameFreezeKey = Config.Bind("Keyboard Shortcuts - Plugin State", "Toggle Game Freeze", KeyCode.KeypadPeriod);
+            configResetPositionKey = Config.Bind("Keyboard Shortcuts - Plugin State", "Reset Camera Position", KeyCode.KeypadDivide);
+            configResetRotationKey = Config.Bind("Keyboard Shortcuts - Plugin State", "Reset Camera Rotation", KeyCode.KeypadDivide);
+            configResetViewKey = Config.Bind("Keyboard Shortcuts - Plugin State", "Reset Camera View", KeyCode.KeypadDivide);
 
-            configMoveForwardKey = Config.Bind("Keyboard Shortcuts - Camera Movement", "Move Forward", new KeyboardShortcut(KeyCode.W));
-            configMoveBackwardKey = Config.Bind("Keyboard Shortcuts - Camera Movement", "Move Backward", new KeyboardShortcut(KeyCode.S));
-            configMoveLeftKey = Config.Bind("Keyboard Shortcuts - Camera Movement", "Move Left", new KeyboardShortcut(KeyCode.A));
-            configMoveRightKey = Config.Bind("Keyboard Shortcuts - Camera Movement", "Move Right", new KeyboardShortcut(KeyCode.D));
-            configMoveUpKey = Config.Bind("Keyboard Shortcuts - Camera Movement", "Move Up", new KeyboardShortcut(KeyCode.E));
-            configMoveDownKey = Config.Bind("Keyboard Shortcuts - Camera Movement", "Move Down", new KeyboardShortcut(KeyCode.Q));
+            configMoveForwardKey = Config.Bind("Keyboard Shortcuts - Camera Movement", "Move Forward", KeyCode.W);
+            configMoveBackwardKey = Config.Bind("Keyboard Shortcuts - Camera Movement", "Move Backward", KeyCode.S);
+            configMoveLeftKey = Config.Bind("Keyboard Shortcuts - Camera Movement", "Move Left", KeyCode.A);
+            configMoveRightKey = Config.Bind("Keyboard Shortcuts - Camera Movement", "Move Right", KeyCode.D);
+            configMoveUpKey = Config.Bind("Keyboard Shortcuts - Camera Movement", "Move Up", KeyCode.E);
+            configMoveDownKey = Config.Bind("Keyboard Shortcuts - Camera Movement", "Move Down", KeyCode.Q);
 
-            configRotatePitchForwardKey = Config.Bind("Keyboard Shortcuts - Camera Rotation", "Pitch Forward", new KeyboardShortcut(KeyCode.Keypad8));
-            configRotatePitchBackwardKey = Config.Bind("Keyboard Shortcuts - Camera Rotation", "Pitch Backward", new KeyboardShortcut(KeyCode.Keypad2));
-            configRotateYawLeftKey = Config.Bind("Keyboard Shortcuts - Camera Rotation", "Yaw Left", new KeyboardShortcut(KeyCode.Keypad4));
-            configRotateYawRightKey = Config.Bind("Keyboard Shortcuts - Camera Rotation", "Yaw Right", new KeyboardShortcut(KeyCode.Keypad6));
-            configRotateRollCounterClockwiseKey = Config.Bind("Keyboard Shortcuts - Camera Rotation", "Roll Counter-clockwise", new KeyboardShortcut(KeyCode.Keypad7));
-            configRotateRollClockwiseKey = Config.Bind("Keyboard Shortcuts - Camera Rotation", "Roll Clockwise", new KeyboardShortcut(KeyCode.Keypad9));
+            configRotatePitchForwardKey = Config.Bind("Keyboard Shortcuts - Camera Rotation", "Pitch Forward", KeyCode.Keypad8);
+            configRotatePitchBackwardKey = Config.Bind("Keyboard Shortcuts - Camera Rotation", "Pitch Backward", KeyCode.Keypad2);
+            configRotateYawLeftKey = Config.Bind("Keyboard Shortcuts - Camera Rotation", "Yaw Left", KeyCode.Keypad4);
+            configRotateYawRightKey = Config.Bind("Keyboard Shortcuts - Camera Rotation", "Yaw Right", KeyCode.Keypad6);
+            configRotateRollCounterClockwiseKey = Config.Bind("Keyboard Shortcuts - Camera Rotation", "Roll Counter-clockwise", KeyCode.Keypad7);
+            configRotateRollClockwiseKey = Config.Bind("Keyboard Shortcuts - Camera Rotation", "Roll Clockwise", KeyCode.Keypad9);
 
-            configIncreaseFovKey = Config.Bind("Keyboard Shortcuts - Camera View", "Increase FOV", new KeyboardShortcut(KeyCode.E));
-            configDecreaseFovKey = Config.Bind("Keyboard Shortcuts - Camera View", "Decrease FOV", new KeyboardShortcut(KeyCode.Q));
-            configIncreaseNearClipKey = Config.Bind("Keyboard Shortcuts - Camera View", "Increase Near Clip Plane", new KeyboardShortcut(KeyCode.X));
-            configDecreaseNearClipKey = Config.Bind("Keyboard Shortcuts - Camera View", "Decrease Near Clip Plane", new KeyboardShortcut(KeyCode.Z));
-            configIncreaseFarClipKey = Config.Bind("Keyboard Shortcuts - Camera View", "Increase Far Clip Plane", new KeyboardShortcut(KeyCode.V));
-            configDecreaseFarClipKey = Config.Bind("Keyboard Shortcuts - Camera View", "Decrease Far Clip Plane", new KeyboardShortcut(KeyCode.C));
+            configIncreaseFovKey = Config.Bind("Keyboard Shortcuts - Camera View", "Increase FOV", KeyCode.Alpha3);
+            configDecreaseFovKey = Config.Bind("Keyboard Shortcuts - Camera View", "Decrease FOV", KeyCode.Alpha1);
+            configIncreaseNearClipKey = Config.Bind("Keyboard Shortcuts - Camera View", "Increase Near Clip Plane", KeyCode.X);
+            configDecreaseNearClipKey = Config.Bind("Keyboard Shortcuts - Camera View", "Decrease Near Clip Plane", KeyCode.Z);
+            configIncreaseFarClipKey = Config.Bind("Keyboard Shortcuts - Camera View", "Increase Far Clip Plane", KeyCode.V);
+            configDecreaseFarClipKey = Config.Bind("Keyboard Shortcuts - Camera View", "Decrease Far Clip Plane", KeyCode.C);
 
-            configIncreaseMoveSpeedKey = Config.Bind("Keyboard Shortcuts - Speed Control", "Increase Movement Speed", new KeyboardShortcut(KeyCode.R));
-            configDecreaseMoveSpeedKey = Config.Bind("Keyboard Shortcuts - Speed Control", "Decrease Movement Speed", new KeyboardShortcut(KeyCode.F));
-            configIncreaseRotationSpeedKey = Config.Bind("Keyboard Shortcuts - Speed Control", "Increase Rotation Speed", new KeyboardShortcut(KeyCode.R));
-            configDecreaseRotationSpeedKey = Config.Bind("Keyboard Shortcuts - Speed Control", "Decrease Rotation Speed", new KeyboardShortcut(KeyCode.F));
+            configIncreaseMoveSpeedKey = Config.Bind("Keyboard Shortcuts - Speed Control", "Increase Movement Speed", KeyCode.R);
+            configDecreaseMoveSpeedKey = Config.Bind("Keyboard Shortcuts - Speed Control", "Decrease Movement Speed", KeyCode.F);
+            configIncreaseRotationSpeedKey = Config.Bind("Keyboard Shortcuts - Speed Control", "Increase Rotation Speed", KeyCode.Keypad3);
+            configDecreaseRotationSpeedKey = Config.Bind("Keyboard Shortcuts - Speed Control", "Decrease Rotation Speed", KeyCode.Keypad1);
         }
 
         private static void StartPositionControl(Camera selectedCamera)
         {
-            if (overrideCameraPositions[selectedCamera] == null)
+            if (!overrideCameraPositions.ContainsKey(selectedCamera) || overrideCameraPositions[selectedCamera] == null)
             {
                 originalCameraPositions[selectedCamera] = selectedCamera.transform.position;
                 overrideCameraPositions[selectedCamera] = selectedCamera.transform.position;
@@ -128,7 +128,7 @@ namespace Unity_FreeCam
 
         private static void StartRotationControl(Camera selectedCamera)
         {
-            if (overrideCameraRotations[selectedCamera] == null)
+            if (!overrideCameraRotations.ContainsKey(selectedCamera) || overrideCameraRotations[selectedCamera] == null)
             {
                 originalCameraRotations[selectedCamera] = selectedCamera.transform.rotation;
                 overrideCameraRotations[selectedCamera] = selectedCamera.transform.rotation;
@@ -137,17 +137,17 @@ namespace Unity_FreeCam
 
         private static void StartViewControl(Camera selectedCamera)
         {
-            if (overrideCameraFovs[selectedCamera] == null)
+            if (!overrideCameraFovs.ContainsKey(selectedCamera) || overrideCameraFovs[selectedCamera] == null)
             {
                 originalCameraFovs[selectedCamera] = selectedCamera.fieldOfView;
                 overrideCameraFovs[selectedCamera] = selectedCamera.fieldOfView;
             }
-            if (overrideCameraNearClips[selectedCamera] == null)
+            if (!overrideCameraNearClips.ContainsKey(selectedCamera) || overrideCameraNearClips[selectedCamera] == null)
             {
                 originalCameraNearClips[selectedCamera] = selectedCamera.nearClipPlane;
                 overrideCameraNearClips[selectedCamera] = selectedCamera.nearClipPlane;
             }
-            if (overrideCameraFarClips[selectedCamera] == null)
+            if (!overrideCameraFarClips.ContainsKey(selectedCamera) || overrideCameraFarClips[selectedCamera] == null)
             {
                 originalCameraFarClips[selectedCamera] = selectedCamera.farClipPlane;
                 overrideCameraFarClips[selectedCamera] = selectedCamera.farClipPlane;
@@ -157,13 +157,19 @@ namespace Unity_FreeCam
         private static void StopPositionControl(Camera selectedCamera)
         {
             overrideCameraPositions[selectedCamera] = null;
-            selectedCamera.transform.position = originalCameraPositions[selectedCamera];
+            if (originalCameraPositions.TryGetValue(selectedCamera, out Vector3 position))
+            {
+                selectedCamera.transform.position = position;
+            }
         }
 
         private static void StopRotationControl(Camera selectedCamera)
         {
             overrideCameraRotations[selectedCamera] = null;
-            selectedCamera.transform.rotation = originalCameraRotations[selectedCamera];
+            if (originalCameraRotations.TryGetValue(selectedCamera, out Quaternion rotation))
+            {
+                selectedCamera.transform.rotation = rotation;
+            }
         }
 
         private static void StopViewControl(Camera selectedCamera)
@@ -171,9 +177,18 @@ namespace Unity_FreeCam
             overrideCameraFovs[selectedCamera] = null;
             overrideCameraNearClips[selectedCamera] = null;
             overrideCameraFarClips[selectedCamera] = null;
-            selectedCamera.fieldOfView = originalCameraFovs[selectedCamera];
-            selectedCamera.nearClipPlane = originalCameraNearClips[selectedCamera];
-            selectedCamera.farClipPlane = originalCameraFarClips[selectedCamera];
+            if (originalCameraFovs.TryGetValue(selectedCamera, out float fov))
+            {
+                selectedCamera.fieldOfView = fov;
+            }
+            if (originalCameraNearClips.TryGetValue(selectedCamera, out float nearClip))
+            {
+                selectedCamera.nearClipPlane = nearClip;
+            }
+            if (originalCameraFarClips.TryGetValue(selectedCamera, out float farClip))
+            {
+                selectedCamera.farClipPlane = farClip;
+            }
         }
 
         private static void ProcessInput()
@@ -182,13 +197,18 @@ namespace Unity_FreeCam
             processingInput = true;
             try
             {
-                if (configToggleFreecamKey.Value.IsDown())
+                if (Input.GetKeyDown(configToggleFreecamKey.Value))
                 {
                     freecamActive = !freecamActive;
                     Logger.LogMessage($"FreeCam is now {(freecamActive ? "enabled" : "disabled")}");
                 }
 
-                if (configSelectCameraKey.Value.IsDown())
+                if (!freecamActive)
+                {
+                    return;
+                }
+
+                if (Input.GetKeyDown(configSelectCameraKey.Value))
                 {
                     if (Camera.allCamerasCount == 0)
                     {
@@ -201,7 +221,7 @@ namespace Unity_FreeCam
                     }
                 }
 
-                if (configToggleGameFreezeKey.Value.IsDown())
+                if (Input.GetKeyDown(configToggleGameFreezeKey.Value))
                 {
                     gameFrozen = !gameFrozen;
                     if (!gameFrozen)
@@ -215,19 +235,19 @@ namespace Unity_FreeCam
                     Logger.LogMessage($"Game is now {(gameFrozen ? "frozen" : "un-frozen")}");
                 }
 
-                if (configIncreaseMoveSpeedKey.Value.IsPressed())
+                if (Input.GetKey(configIncreaseMoveSpeedKey.Value))
                 {
                     moveSpeed += moveSpeed * Time.deltaTime;
                 }
-                if (configDecreaseMoveSpeedKey.Value.IsPressed())
+                if (Input.GetKey(configDecreaseMoveSpeedKey.Value))
                 {
                     moveSpeed -= moveSpeed * Time.deltaTime;
                 }
-                if (configIncreaseRotationSpeedKey.Value.IsPressed())
+                if (Input.GetKey(configIncreaseRotationSpeedKey.Value))
                 {
                     rotationSpeed += rotationSpeed * Time.deltaTime;
                 }
-                if (configDecreaseRotationSpeedKey.Value.IsPressed())
+                if (Input.GetKey(configDecreaseRotationSpeedKey.Value))
                 {
                     rotationSpeed -= rotationSpeed * Time.deltaTime;
                 }
@@ -237,113 +257,113 @@ namespace Unity_FreeCam
                 {
                     Camera selectedCamera = Camera.allCameras[selectedCameraIndex];
 
-                    if (configResetPositionKey.Value.IsDown())
+                    if (Input.GetKeyDown(configResetPositionKey.Value))
                     {
                         StopPositionControl(selectedCamera);
                     }
-                    if (configResetRotationKey.Value.IsDown())
+                    if (Input.GetKeyDown(configResetRotationKey.Value))
                     {
                         StopRotationControl(selectedCamera);
                     }
-                    if (configResetViewKey.Value.IsDown())
+                    if (Input.GetKeyDown(configResetViewKey.Value))
                     {
                         StopViewControl(selectedCamera);
                     }
 
-                    if (configMoveForwardKey.Value.IsPressed())
+                    if (Input.GetKey(configMoveForwardKey.Value))
                     {
                         StartPositionControl(selectedCamera);
                         overrideCameraPositions[selectedCamera] += selectedCamera.transform.TransformDirection(Vector3.forward * Time.deltaTime * moveSpeed);
                     }
-                    if (configMoveBackwardKey.Value.IsPressed())
+                    if (Input.GetKey(configMoveBackwardKey.Value))
                     {
                         StartPositionControl(selectedCamera);
                         overrideCameraPositions[selectedCamera] += selectedCamera.transform.TransformDirection(Vector3.back * Time.deltaTime * moveSpeed);
                     }
-                    if (configMoveLeftKey.Value.IsPressed())
+                    if (Input.GetKey(configMoveLeftKey.Value))
                     {
                         StartPositionControl(selectedCamera);
                         overrideCameraPositions[selectedCamera] += selectedCamera.transform.TransformDirection(Vector3.left * Time.deltaTime * moveSpeed);
                     }
-                    if (configMoveRightKey.Value.IsPressed())
+                    if (Input.GetKey(configMoveRightKey.Value))
                     {
                         StartPositionControl(selectedCamera);
                         overrideCameraPositions[selectedCamera] += selectedCamera.transform.TransformDirection(Vector3.right * Time.deltaTime * moveSpeed);
                     }
-                    if (configMoveUpKey.Value.IsPressed())
+                    if (Input.GetKey(configMoveUpKey.Value))
                     {
                         StartPositionControl(selectedCamera);
                         overrideCameraPositions[selectedCamera] += selectedCamera.transform.TransformDirection(Vector3.up * Time.deltaTime * moveSpeed);
                     }
-                    if (configMoveDownKey.Value.IsPressed())
+                    if (Input.GetKey(configMoveDownKey.Value))
                     {
                         StartPositionControl(selectedCamera);
                         overrideCameraPositions[selectedCamera] += selectedCamera.transform.TransformDirection(Vector3.down * Time.deltaTime * moveSpeed);
                     }
 
-                    if (configRotatePitchForwardKey.Value.IsPressed())
-                    {
-                        StartRotationControl(selectedCamera);
-                        Vector3 currentEuler = overrideCameraRotations[selectedCamera].Value.eulerAngles;
-                        overrideCameraRotations[selectedCamera] = Quaternion.Euler(currentEuler.x + (Time.deltaTime * rotationSpeed), currentEuler.y, currentEuler.z);
-                    }
-                    if (configRotatePitchBackwardKey.Value.IsPressed())
+                    if (Input.GetKey(configRotatePitchForwardKey.Value))
                     {
                         StartRotationControl(selectedCamera);
                         Vector3 currentEuler = overrideCameraRotations[selectedCamera].Value.eulerAngles;
                         overrideCameraRotations[selectedCamera] = Quaternion.Euler(currentEuler.x - (Time.deltaTime * rotationSpeed), currentEuler.y, currentEuler.z);
                     }
-                    if (configRotateYawLeftKey.Value.IsPressed())
+                    if (Input.GetKey(configRotatePitchBackwardKey.Value))
+                    {
+                        StartRotationControl(selectedCamera);
+                        Vector3 currentEuler = overrideCameraRotations[selectedCamera].Value.eulerAngles;
+                        overrideCameraRotations[selectedCamera] = Quaternion.Euler(currentEuler.x + (Time.deltaTime * rotationSpeed), currentEuler.y, currentEuler.z);
+                    }
+                    if (Input.GetKey(configRotateYawLeftKey.Value))
                     {
                         StartRotationControl(selectedCamera);
                         Vector3 currentEuler = overrideCameraRotations[selectedCamera].Value.eulerAngles;
                         overrideCameraRotations[selectedCamera] = Quaternion.Euler(currentEuler.x, currentEuler.y - (Time.deltaTime * rotationSpeed), currentEuler.z);
                     }
-                    if (configRotateYawRightKey.Value.IsPressed())
+                    if (Input.GetKey(configRotateYawRightKey.Value))
                     {
                         StartRotationControl(selectedCamera);
                         Vector3 currentEuler = overrideCameraRotations[selectedCamera].Value.eulerAngles;
                         overrideCameraRotations[selectedCamera] = Quaternion.Euler(currentEuler.x, currentEuler.y + (Time.deltaTime * rotationSpeed), currentEuler.z);
                     }
-                    if (configRotateRollCounterClockwiseKey.Value.IsPressed())
-                    {
-                        StartRotationControl(selectedCamera);
-                        Vector3 currentEuler = overrideCameraRotations[selectedCamera].Value.eulerAngles;
-                        overrideCameraRotations[selectedCamera] = Quaternion.Euler(currentEuler.x, currentEuler.y, currentEuler.z - (Time.deltaTime * rotationSpeed));
-                    }
-                    if (configRotateRollClockwiseKey.Value.IsPressed())
+                    if (Input.GetKey(configRotateRollCounterClockwiseKey.Value))
                     {
                         StartRotationControl(selectedCamera);
                         Vector3 currentEuler = overrideCameraRotations[selectedCamera].Value.eulerAngles;
                         overrideCameraRotations[selectedCamera] = Quaternion.Euler(currentEuler.x, currentEuler.y, currentEuler.z + (Time.deltaTime * rotationSpeed));
                     }
+                    if (Input.GetKey(configRotateRollClockwiseKey.Value))
+                    {
+                        StartRotationControl(selectedCamera);
+                        Vector3 currentEuler = overrideCameraRotations[selectedCamera].Value.eulerAngles;
+                        overrideCameraRotations[selectedCamera] = Quaternion.Euler(currentEuler.x, currentEuler.y, currentEuler.z - (Time.deltaTime * rotationSpeed));
+                    }
 
-                    if (configIncreaseFovKey.Value.IsPressed())
+                    if (Input.GetKey(configIncreaseFovKey.Value))
                     {
                         StartViewControl(selectedCamera);
                         overrideCameraFovs[selectedCamera] += Time.deltaTime * rotationSpeed;
                     }
-                    if (configDecreaseFovKey.Value.IsPressed())
+                    if (Input.GetKey(configDecreaseFovKey.Value))
                     {
                         StartViewControl(selectedCamera);
                         overrideCameraFovs[selectedCamera] -= Time.deltaTime * rotationSpeed;
                     }
-                    if (configIncreaseNearClipKey.Value.IsPressed())
+                    if (Input.GetKey(configIncreaseNearClipKey.Value))
                     {
                         StartViewControl(selectedCamera);
                         overrideCameraNearClips[selectedCamera] += Time.deltaTime * moveSpeed;
                     }
-                    if (configDecreaseNearClipKey.Value.IsPressed())
+                    if (Input.GetKey(configDecreaseNearClipKey.Value))
                     {
                         StartViewControl(selectedCamera);
                         overrideCameraNearClips[selectedCamera] -= Time.deltaTime * moveSpeed;
                     }
-                    if (configIncreaseFarClipKey.Value.IsPressed())
+                    if (Input.GetKey(configIncreaseFarClipKey.Value))
                     {
                         StartViewControl(selectedCamera);
                         overrideCameraFarClips[selectedCamera] += Time.deltaTime * moveSpeed;
                     }
-                    if (configDecreaseFarClipKey.Value.IsPressed())
+                    if (Input.GetKey(configDecreaseFarClipKey.Value))
                     {
                         StartViewControl(selectedCamera);
                         overrideCameraFarClips[selectedCamera] -= Time.deltaTime * moveSpeed;
@@ -370,23 +390,23 @@ namespace Unity_FreeCam
         {
             foreach (Camera camera in Camera.allCameras)
             {
-                if (overrideCameraPositions[camera] != null)
+                if (overrideCameraPositions.ContainsKey(camera) && overrideCameraPositions[camera] != null)
                 {
                     camera.transform.position = overrideCameraPositions[camera].Value;
                 }
-                if (overrideCameraRotations[camera] != null)
+                if (overrideCameraRotations.ContainsKey(camera) && overrideCameraRotations[camera] != null)
                 {
                     camera.transform.rotation = overrideCameraRotations[camera].Value;
                 }
-                if (overrideCameraFovs[camera] != null)
+                if (overrideCameraFovs.ContainsKey(camera) && overrideCameraFovs[camera] != null)
                 {
                     camera.fieldOfView = overrideCameraFovs[camera].Value;
                 }
-                if (overrideCameraNearClips[camera] != null)
+                if (overrideCameraNearClips.ContainsKey(camera) && overrideCameraNearClips[camera] != null)
                 {
                     camera.nearClipPlane = overrideCameraNearClips[camera].Value;
                 }
-                if (overrideCameraFarClips[camera] != null)
+                if (overrideCameraFarClips.ContainsKey(camera) && overrideCameraFarClips[camera] != null)
                 {
                     camera.farClipPlane = overrideCameraFarClips[camera].Value;
                 }
@@ -394,32 +414,13 @@ namespace Unity_FreeCam
         }
 
         [HarmonyPrefix]
-        [HarmonyPatch(typeof(Input), nameof(Input.GetKey))]
-        public static bool OverrideGetKey(ref bool __result)
-        {
-            if (freecamActive && !processingInput)
-            {
-                __result = false;
-                return false;
-            }
-            return true;
-        }
-
-        [HarmonyPrefix]
-        [HarmonyPatch(typeof(Input), nameof(Input.GetKeyDown))]
-        public static bool OverrideGetKeyDown(ref bool __result)
-        {
-            if (freecamActive && !processingInput)
-            {
-                __result = false;
-                return false;
-            }
-            return true;
-        }
-
-        [HarmonyPrefix]
-        [HarmonyPatch(typeof(Input), nameof(Input.GetKeyUp))]
-        public static bool OverrideGetKeyUp(ref bool __result)
+        [HarmonyPatch(typeof(Input), nameof(Input.GetKey), typeof(string))]
+        [HarmonyPatch(typeof(Input), nameof(Input.GetKey), typeof(KeyCode))]
+        [HarmonyPatch(typeof(Input), nameof(Input.GetKeyDown), typeof(string))]
+        [HarmonyPatch(typeof(Input), nameof(Input.GetKeyDown), typeof(KeyCode))]
+        [HarmonyPatch(typeof(Input), nameof(Input.GetKeyUp), typeof(string))]
+        [HarmonyPatch(typeof(Input), nameof(Input.GetKeyUp), typeof(KeyCode))]
+        public static bool OverrideKeybinds(ref bool __result)
         {
             if (freecamActive && !processingInput)
             {
@@ -432,11 +433,11 @@ namespace Unity_FreeCam
         public static string GetFullHierarchyPath(GameObject gameObject)
         {
             StringBuilder sb = new StringBuilder(gameObject.name);
-            GameObject currentObject = gameObject.transform.parent.gameObject;
+            GameObject currentObject = gameObject.transform.parent?.gameObject;
             while (currentObject != null)
             {
-                _ = sb.Insert(0, gameObject.name).Insert(0, '/');
-                currentObject = currentObject.transform.parent.gameObject;
+                _ = sb.Insert(0, '/').Insert(0, currentObject.name);
+                currentObject = currentObject.transform.parent?.gameObject;
             }
             return sb.ToString();
         }
