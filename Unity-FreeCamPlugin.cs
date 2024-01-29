@@ -49,7 +49,6 @@ namespace Unity_FreeCam
         private static ConfigEntry<KeyboardShortcut> configIncreaseRotationSpeedKey;
         private static ConfigEntry<KeyboardShortcut> configDecreaseRotationSpeedKey;
 
-        private static readonly List<Camera> loadedCameras = new List<Camera>();
         private static int selectedCameraIndex = 0;
 
         private static float moveSpeed = 1.0f;
@@ -58,19 +57,21 @@ namespace Unity_FreeCam
         private static bool freecamActive = false;
         private static bool gameFrozen = false;
 
+        private static float oldTimeScale = 1.0f;
+
         private static bool processingInput = false;
 
-        private static readonly Dictionary<Camera, Vector3> originalCameraPositions;
-        private static readonly Dictionary<Camera, Quaternion> originalCameraRotations;
-        private static readonly Dictionary<Camera, float> originalCameraFovs;
-        private static readonly Dictionary<Camera, float> originalCameraNearClips;
-        private static readonly Dictionary<Camera, float> originalCameraFarClips;
+        private static readonly Dictionary<Camera, Vector3> originalCameraPositions = new Dictionary<Camera, Vector3>();
+        private static readonly Dictionary<Camera, Quaternion> originalCameraRotations = new Dictionary<Camera, Quaternion>();
+        private static readonly Dictionary<Camera, float> originalCameraFovs = new Dictionary<Camera, float>();
+        private static readonly Dictionary<Camera, float> originalCameraNearClips = new Dictionary<Camera, float>();
+        private static readonly Dictionary<Camera, float> originalCameraFarClips = new Dictionary<Camera, float>();
 
-        private static readonly Dictionary<Camera, Vector3?> overrideCameraPositions;
-        private static readonly Dictionary<Camera, Quaternion?> overrideCameraRotations;
-        private static readonly Dictionary<Camera, float?> overrideCameraFovs;
-        private static readonly Dictionary<Camera, float?> overrideCameraNearClips;
-        private static readonly Dictionary<Camera, float?> overrideCameraFarClips;
+        private static readonly Dictionary<Camera, Vector3?> overrideCameraPositions = new Dictionary<Camera, Vector3?>();
+        private static readonly Dictionary<Camera, Quaternion?> overrideCameraRotations = new Dictionary<Camera, Quaternion?>();
+        private static readonly Dictionary<Camera, float?> overrideCameraFovs = new Dictionary<Camera, float?>();
+        private static readonly Dictionary<Camera, float?> overrideCameraNearClips = new Dictionary<Camera, float?>();
+        private static readonly Dictionary<Camera, float?> overrideCameraFarClips = new Dictionary<Camera, float?>();
 
 
         public void Start()
@@ -189,24 +190,28 @@ namespace Unity_FreeCam
 
                 if (configSelectCameraKey.Value.IsDown())
                 {
-                    if (loadedCameras.Count == 0)
+                    if (Camera.allCamerasCount == 0)
                     {
                         Logger.LogWarning("There are no cameras to select");
                     }
                     else
                     {
-                        selectedCameraIndex = (selectedCameraIndex + 1) % loadedCameras.Count;
-                        Logger.LogMessage($"Switched to camera {selectedCameraIndex + 1}/{loadedCameras.Count} at {GetFullHierarchyPath(loadedCameras[selectedCameraIndex].gameObject)}");
-                        if (!loadedCameras[selectedCameraIndex].isActiveAndEnabled)
-                        {
-                            Logger.LogMessage("The selected camera is NOT active");
-                        }
+                        selectedCameraIndex = (selectedCameraIndex + 1) % Camera.allCamerasCount;
+                        Logger.LogMessage($"Switched to camera {selectedCameraIndex + 1}/{Camera.allCamerasCount} at {GetFullHierarchyPath(Camera.allCameras[selectedCameraIndex].gameObject)}");
                     }
                 }
 
                 if (configToggleGameFreezeKey.Value.IsDown())
                 {
                     gameFrozen = !gameFrozen;
+                    if (!gameFrozen)
+                    {
+                        Time.timeScale = oldTimeScale;
+                    }
+                    else
+                    {
+                        oldTimeScale = Time.timeScale;
+                    }
                     Logger.LogMessage($"Game is now {(gameFrozen ? "frozen" : "un-frozen")}");
                 }
 
@@ -228,9 +233,9 @@ namespace Unity_FreeCam
                 }
 
                 // Following key-binds need an existing selected camera
-                if (selectedCameraIndex < loadedCameras.Count)
+                if (selectedCameraIndex < Camera.allCamerasCount)
                 {
-                    Camera selectedCamera = loadedCameras[selectedCameraIndex];
+                    Camera selectedCamera = Camera.allCameras[selectedCameraIndex];
 
                     if (configResetPositionKey.Value.IsDown())
                     {
@@ -354,6 +359,38 @@ namespace Unity_FreeCam
         public void Update()
         {
             ProcessInput();
+
+            if (gameFrozen)
+            {
+                Time.timeScale = 0;
+            }
+        }
+
+        public void LateUpdate()
+        {
+            foreach (Camera camera in Camera.allCameras)
+            {
+                if (overrideCameraPositions[camera] != null)
+                {
+                    camera.transform.position = overrideCameraPositions[camera].Value;
+                }
+                if (overrideCameraRotations[camera] != null)
+                {
+                    camera.transform.rotation = overrideCameraRotations[camera].Value;
+                }
+                if (overrideCameraFovs[camera] != null)
+                {
+                    camera.fieldOfView = overrideCameraFovs[camera].Value;
+                }
+                if (overrideCameraNearClips[camera] != null)
+                {
+                    camera.nearClipPlane = overrideCameraNearClips[camera].Value;
+                }
+                if (overrideCameraFarClips[camera] != null)
+                {
+                    camera.farClipPlane = overrideCameraFarClips[camera].Value;
+                }
+            }
         }
 
         [HarmonyPrefix]
