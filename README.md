@@ -65,8 +65,8 @@ Pressing the `Toggle UI Visibility` key will hide all currently active `Canvas` 
 | Reset View (FOV & Clipping Planes) | Numpad Divide (/)   |
 | **Movement**                       |                     |
 | Move Forward                       | W                   |
-| Move Backward                      | A                   |
-| Move Left                          | S                   |
+| Move Backward                      | S                   |
+| Move Left                          | A                   |
 | Move Right                         | D                   |
 | Move Up                            | E                   |
 | Move Down                          | Q                   |
