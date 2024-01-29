@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using BepInEx;
 using BepInEx.Configuration;
@@ -20,6 +21,7 @@ namespace Unity_FreeCam
         private static ConfigEntry<KeyCode> configSelectCameraKey;
         private static ConfigEntry<KeyCode> configListCamerasKey;
         private static ConfigEntry<KeyCode> configToggleGameFreezeKey;
+        private static ConfigEntry<KeyCode> configToggleUIVisibilityKey;
         private static ConfigEntry<KeyCode> configResetPositionKey;
         private static ConfigEntry<KeyCode> configResetRotationKey;
         private static ConfigEntry<KeyCode> configResetViewKey;
@@ -57,6 +59,7 @@ namespace Unity_FreeCam
 
         private static bool freecamActive = false;
         private static bool gameFrozen = false;
+        private static bool hideUI = false;
 
         private static float oldTimeScale = 1.0f;
 
@@ -74,6 +77,7 @@ namespace Unity_FreeCam
         private static readonly Dictionary<Camera, float?> overrideCameraNearClips = new Dictionary<Camera, float?>();
         private static readonly Dictionary<Camera, float?> overrideCameraFarClips = new Dictionary<Camera, float?>();
 
+        private static List<Canvas> disabledCanvases = new List<Canvas>();
 
         public void Start()
         {
@@ -88,6 +92,7 @@ namespace Unity_FreeCam
             configSelectCameraKey = Config.Bind("Keyboard Shortcuts - Plugin State", "Select Camera", KeyCode.KeypadMinus);
             configListCamerasKey = Config.Bind("Keyboard Shortcuts - Plugin State", "List Cameras", KeyCode.Keypad5);
             configToggleGameFreezeKey = Config.Bind("Keyboard Shortcuts - Plugin State", "Toggle Game Freeze", KeyCode.KeypadPeriod);
+            configToggleUIVisibilityKey = Config.Bind("Keyboard Shortcuts - Plugin State", "Toggle UI Visibility", KeyCode.KeypadPlus);
             configResetPositionKey = Config.Bind("Keyboard Shortcuts - Plugin State", "Reset Camera Position", KeyCode.KeypadDivide);
             configResetRotationKey = Config.Bind("Keyboard Shortcuts - Plugin State", "Reset Camera Rotation", KeyCode.KeypadDivide);
             configResetViewKey = Config.Bind("Keyboard Shortcuts - Plugin State", "Reset Camera View", KeyCode.KeypadDivide);
@@ -281,6 +286,27 @@ namespace Unity_FreeCam
                     Logger.LogMessage($"Game is now {(gameFrozen ? "frozen" : "un-frozen")}");
                 }
 
+                if (Input.GetKeyDown(configToggleUIVisibilityKey.Value))
+                {
+                    hideUI = !hideUI;
+                    if (hideUI)
+                    {
+                        disabledCanvases = FindObjectsOfType<Canvas>().Where(c => c.isActiveAndEnabled).ToList();
+                    }
+                    else
+                    {
+                        foreach (Canvas canvas in disabledCanvases)
+                        {
+                            if (canvas == null)
+                            {
+                                continue;
+                            }
+                            canvas.enabled = true;
+                        }
+                    }
+                    Logger.LogMessage($"UI is now {(hideUI ? "hidden" : "visible")}");
+                }
+
                 if (Input.GetKey(configIncreaseMoveSpeedKey.Value))
                 {
                     moveSpeed += moveSpeed * Time.unscaledDeltaTime;
@@ -433,15 +459,27 @@ namespace Unity_FreeCam
         public void Update()
         {
             ProcessInput();
-
-            if (gameFrozen)
-            {
-                Time.timeScale = 0;
-            }
         }
 
         public void LateUpdate()
         {
+            if (gameFrozen)
+            {
+                Time.timeScale = 0;
+            }
+
+            if (hideUI)
+            {
+                foreach (Canvas canvas in disabledCanvases)
+                {
+                    if (canvas == null)
+                    {
+                        continue;
+                    }
+                    canvas.enabled = false;
+                }
+            }
+
             foreach (Camera camera in Camera.allCameras)
             {
                 if (overrideCameraPositions.ContainsKey(camera) && overrideCameraPositions[camera] != null)
