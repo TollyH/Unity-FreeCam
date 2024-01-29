@@ -237,19 +237,19 @@ namespace Unity_FreeCam
 
                 if (Input.GetKey(configIncreaseMoveSpeedKey.Value))
                 {
-                    moveSpeed += moveSpeed * Time.deltaTime;
+                    moveSpeed += moveSpeed * Time.unscaledDeltaTime;
                 }
                 if (Input.GetKey(configDecreaseMoveSpeedKey.Value))
                 {
-                    moveSpeed -= moveSpeed * Time.deltaTime;
+                    moveSpeed -= moveSpeed * Time.unscaledDeltaTime;
                 }
                 if (Input.GetKey(configIncreaseRotationSpeedKey.Value))
                 {
-                    rotationSpeed += rotationSpeed * Time.deltaTime;
+                    rotationSpeed += rotationSpeed * Time.unscaledDeltaTime;
                 }
                 if (Input.GetKey(configDecreaseRotationSpeedKey.Value))
                 {
-                    rotationSpeed -= rotationSpeed * Time.deltaTime;
+                    rotationSpeed -= rotationSpeed * Time.unscaledDeltaTime;
                 }
 
                 // Following key-binds need an existing selected camera
@@ -273,100 +273,100 @@ namespace Unity_FreeCam
                     if (Input.GetKey(configMoveForwardKey.Value))
                     {
                         StartPositionControl(selectedCamera);
-                        overrideCameraPositions[selectedCamera] += selectedCamera.transform.TransformDirection(Vector3.forward * Time.deltaTime * moveSpeed);
+                        overrideCameraPositions[selectedCamera] += selectedCamera.transform.TransformDirection(Vector3.forward * Time.unscaledDeltaTime * moveSpeed);
                     }
                     if (Input.GetKey(configMoveBackwardKey.Value))
                     {
                         StartPositionControl(selectedCamera);
-                        overrideCameraPositions[selectedCamera] += selectedCamera.transform.TransformDirection(Vector3.back * Time.deltaTime * moveSpeed);
+                        overrideCameraPositions[selectedCamera] += selectedCamera.transform.TransformDirection(Vector3.back * Time.unscaledDeltaTime * moveSpeed);
                     }
                     if (Input.GetKey(configMoveLeftKey.Value))
                     {
                         StartPositionControl(selectedCamera);
-                        overrideCameraPositions[selectedCamera] += selectedCamera.transform.TransformDirection(Vector3.left * Time.deltaTime * moveSpeed);
+                        overrideCameraPositions[selectedCamera] += selectedCamera.transform.TransformDirection(Vector3.left * Time.unscaledDeltaTime * moveSpeed);
                     }
                     if (Input.GetKey(configMoveRightKey.Value))
                     {
                         StartPositionControl(selectedCamera);
-                        overrideCameraPositions[selectedCamera] += selectedCamera.transform.TransformDirection(Vector3.right * Time.deltaTime * moveSpeed);
+                        overrideCameraPositions[selectedCamera] += selectedCamera.transform.TransformDirection(Vector3.right * Time.unscaledDeltaTime * moveSpeed);
                     }
                     if (Input.GetKey(configMoveUpKey.Value))
                     {
                         StartPositionControl(selectedCamera);
-                        overrideCameraPositions[selectedCamera] += selectedCamera.transform.TransformDirection(Vector3.up * Time.deltaTime * moveSpeed);
+                        overrideCameraPositions[selectedCamera] += selectedCamera.transform.TransformDirection(Vector3.up * Time.unscaledDeltaTime * moveSpeed);
                     }
                     if (Input.GetKey(configMoveDownKey.Value))
                     {
                         StartPositionControl(selectedCamera);
-                        overrideCameraPositions[selectedCamera] += selectedCamera.transform.TransformDirection(Vector3.down * Time.deltaTime * moveSpeed);
+                        overrideCameraPositions[selectedCamera] += selectedCamera.transform.TransformDirection(Vector3.down * Time.unscaledDeltaTime * moveSpeed);
                     }
 
                     if (Input.GetKey(configRotatePitchForwardKey.Value))
                     {
                         StartRotationControl(selectedCamera);
                         Vector3 currentEuler = overrideCameraRotations[selectedCamera].Value.eulerAngles;
-                        overrideCameraRotations[selectedCamera] = Quaternion.Euler(currentEuler.x - (Time.deltaTime * rotationSpeed), currentEuler.y, currentEuler.z);
+                        overrideCameraRotations[selectedCamera] = Quaternion.Euler(currentEuler.x - (Time.unscaledDeltaTime * rotationSpeed), currentEuler.y, currentEuler.z);
                     }
                     if (Input.GetKey(configRotatePitchBackwardKey.Value))
                     {
                         StartRotationControl(selectedCamera);
                         Vector3 currentEuler = overrideCameraRotations[selectedCamera].Value.eulerAngles;
-                        overrideCameraRotations[selectedCamera] = Quaternion.Euler(currentEuler.x + (Time.deltaTime * rotationSpeed), currentEuler.y, currentEuler.z);
+                        overrideCameraRotations[selectedCamera] = Quaternion.Euler(currentEuler.x + (Time.unscaledDeltaTime * rotationSpeed), currentEuler.y, currentEuler.z);
                     }
                     if (Input.GetKey(configRotateYawLeftKey.Value))
                     {
                         StartRotationControl(selectedCamera);
                         Vector3 currentEuler = overrideCameraRotations[selectedCamera].Value.eulerAngles;
-                        overrideCameraRotations[selectedCamera] = Quaternion.Euler(currentEuler.x, currentEuler.y - (Time.deltaTime * rotationSpeed), currentEuler.z);
+                        overrideCameraRotations[selectedCamera] = Quaternion.Euler(currentEuler.x, currentEuler.y - (Time.unscaledDeltaTime * rotationSpeed), currentEuler.z);
                     }
                     if (Input.GetKey(configRotateYawRightKey.Value))
                     {
                         StartRotationControl(selectedCamera);
                         Vector3 currentEuler = overrideCameraRotations[selectedCamera].Value.eulerAngles;
-                        overrideCameraRotations[selectedCamera] = Quaternion.Euler(currentEuler.x, currentEuler.y + (Time.deltaTime * rotationSpeed), currentEuler.z);
+                        overrideCameraRotations[selectedCamera] = Quaternion.Euler(currentEuler.x, currentEuler.y + (Time.unscaledDeltaTime * rotationSpeed), currentEuler.z);
                     }
                     if (Input.GetKey(configRotateRollCounterClockwiseKey.Value))
                     {
                         StartRotationControl(selectedCamera);
                         Vector3 currentEuler = overrideCameraRotations[selectedCamera].Value.eulerAngles;
-                        overrideCameraRotations[selectedCamera] = Quaternion.Euler(currentEuler.x, currentEuler.y, currentEuler.z + (Time.deltaTime * rotationSpeed));
+                        overrideCameraRotations[selectedCamera] = Quaternion.Euler(currentEuler.x, currentEuler.y, currentEuler.z + (Time.unscaledDeltaTime * rotationSpeed));
                     }
                     if (Input.GetKey(configRotateRollClockwiseKey.Value))
                     {
                         StartRotationControl(selectedCamera);
                         Vector3 currentEuler = overrideCameraRotations[selectedCamera].Value.eulerAngles;
-                        overrideCameraRotations[selectedCamera] = Quaternion.Euler(currentEuler.x, currentEuler.y, currentEuler.z - (Time.deltaTime * rotationSpeed));
+                        overrideCameraRotations[selectedCamera] = Quaternion.Euler(currentEuler.x, currentEuler.y, currentEuler.z - (Time.unscaledDeltaTime * rotationSpeed));
                     }
 
                     if (Input.GetKey(configIncreaseFovKey.Value))
                     {
                         StartViewControl(selectedCamera);
-                        overrideCameraFovs[selectedCamera] += Time.deltaTime * rotationSpeed;
+                        overrideCameraFovs[selectedCamera] += Time.unscaledDeltaTime * rotationSpeed;
                     }
                     if (Input.GetKey(configDecreaseFovKey.Value))
                     {
                         StartViewControl(selectedCamera);
-                        overrideCameraFovs[selectedCamera] -= Time.deltaTime * rotationSpeed;
+                        overrideCameraFovs[selectedCamera] -= Time.unscaledDeltaTime * rotationSpeed;
                     }
                     if (Input.GetKey(configIncreaseNearClipKey.Value))
                     {
                         StartViewControl(selectedCamera);
-                        overrideCameraNearClips[selectedCamera] += Time.deltaTime * moveSpeed;
+                        overrideCameraNearClips[selectedCamera] += Time.unscaledDeltaTime * moveSpeed;
                     }
                     if (Input.GetKey(configDecreaseNearClipKey.Value))
                     {
                         StartViewControl(selectedCamera);
-                        overrideCameraNearClips[selectedCamera] -= Time.deltaTime * moveSpeed;
+                        overrideCameraNearClips[selectedCamera] -= Time.unscaledDeltaTime * moveSpeed;
                     }
                     if (Input.GetKey(configIncreaseFarClipKey.Value))
                     {
                         StartViewControl(selectedCamera);
-                        overrideCameraFarClips[selectedCamera] += Time.deltaTime * moveSpeed;
+                        overrideCameraFarClips[selectedCamera] += Time.unscaledDeltaTime * moveSpeed;
                     }
                     if (Input.GetKey(configDecreaseFarClipKey.Value))
                     {
                         StartViewControl(selectedCamera);
-                        overrideCameraFarClips[selectedCamera] -= Time.deltaTime * moveSpeed;
+                        overrideCameraFarClips[selectedCamera] -= Time.unscaledDeltaTime * moveSpeed;
                     }
                 }
             }
