@@ -18,6 +18,7 @@ namespace Unity_FreeCam
 
         private static ConfigEntry<KeyCode> configToggleFreecamKey;
         private static ConfigEntry<KeyCode> configSelectCameraKey;
+        private static ConfigEntry<KeyCode> configListCamerasKey;
         private static ConfigEntry<KeyCode> configToggleGameFreezeKey;
         private static ConfigEntry<KeyCode> configResetPositionKey;
         private static ConfigEntry<KeyCode> configResetRotationKey;
@@ -85,6 +86,7 @@ namespace Unity_FreeCam
 
             configToggleFreecamKey = Config.Bind("Keyboard Shortcuts - Plugin State", "Toggle FreeCam", KeyCode.KeypadMultiply);
             configSelectCameraKey = Config.Bind("Keyboard Shortcuts - Plugin State", "Select Camera", KeyCode.KeypadMinus);
+            configListCamerasKey = Config.Bind("Keyboard Shortcuts - Plugin State", "List Cameras", KeyCode.Keypad5);
             configToggleGameFreezeKey = Config.Bind("Keyboard Shortcuts - Plugin State", "Toggle Game Freeze", KeyCode.KeypadPeriod);
             configResetPositionKey = Config.Bind("Keyboard Shortcuts - Plugin State", "Reset Camera Position", KeyCode.KeypadDivide);
             configResetRotationKey = Config.Bind("Keyboard Shortcuts - Plugin State", "Reset Camera Rotation", KeyCode.KeypadDivide);
@@ -115,6 +117,45 @@ namespace Unity_FreeCam
             configDecreaseMoveSpeedKey = Config.Bind("Keyboard Shortcuts - Speed Control", "Decrease Movement Speed", KeyCode.F);
             configIncreaseRotationSpeedKey = Config.Bind("Keyboard Shortcuts - Speed Control", "Increase Rotation Speed", KeyCode.Keypad3);
             configDecreaseRotationSpeedKey = Config.Bind("Keyboard Shortcuts - Speed Control", "Decrease Rotation Speed", KeyCode.Keypad1);
+        }
+
+        public static void LogCameraList()
+        {
+            string message = $"Current cameras ({Camera.allCamerasCount}):";
+            for (int i = 0; i < Camera.allCamerasCount; i++)
+            {
+                Camera camera = Camera.allCameras[i];
+                message += $"\n    {i + 1}. {GetFullHierarchyPath(camera.gameObject)}";
+                if (i == selectedCameraIndex)
+                {
+                    message += " (selected)";
+                }
+                if (overrideCameraPositions.TryGetValue(camera, out Vector3? position) && position != null)
+                {
+                    message += " (overriding position)";
+                }
+                if (overrideCameraRotations.TryGetValue(camera, out Quaternion? rotation) && rotation != null)
+                {
+                    message += " (overriding rotation)";
+                }
+                if (overrideCameraFovs.TryGetValue(camera, out float? fov) && fov != null)
+                {
+                    message += " (overriding fov)";
+                }
+                if (overrideCameraNearClips.TryGetValue(camera, out float? nearClip) && nearClip != null)
+                {
+                    message += " (overriding near clip plane)";
+                }
+                if (overrideCameraFarClips.TryGetValue(camera, out float? farClip) && farClip != null)
+                {
+                    message += " (overriding far clip plane)";
+                }
+            }
+            Logger.LogMessage(message);
+            if (selectedCameraIndex >= Camera.allCamerasCount)
+            {
+                Logger.LogWarning("No camera is selected as the selected index is greater than the number of cameras! Pressing the select camera key should fix this.");
+            }
         }
 
         private static void StartPositionControl(Camera selectedCamera)
@@ -219,6 +260,11 @@ namespace Unity_FreeCam
                         selectedCameraIndex = (selectedCameraIndex + 1) % Camera.allCamerasCount;
                         Logger.LogMessage($"Switched to camera {selectedCameraIndex + 1}/{Camera.allCamerasCount} at {GetFullHierarchyPath(Camera.allCameras[selectedCameraIndex].gameObject)}");
                     }
+                }
+
+                if (Input.GetKeyDown(configListCamerasKey.Value))
+                {
+                    LogCameraList();
                 }
 
                 if (Input.GetKeyDown(configToggleGameFreezeKey.Value))
