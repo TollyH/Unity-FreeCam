@@ -357,6 +357,10 @@ namespace Unity_FreeCam
                     {
                         StartViewControl(selectedCamera);
                         overrideCameraNearClips[selectedCamera] -= Time.unscaledDeltaTime * moveSpeed;
+                        if (overrideCameraNearClips[selectedCamera] < 0.01f)
+                        {
+                            overrideCameraNearClips[selectedCamera] = 0.01f;
+                        }
                     }
                     if (Input.GetKey(configIncreaseFarClipKey.Value))
                     {
@@ -367,6 +371,10 @@ namespace Unity_FreeCam
                     {
                         StartViewControl(selectedCamera);
                         overrideCameraFarClips[selectedCamera] -= Time.unscaledDeltaTime * moveSpeed;
+                        if (overrideCameraFarClips[selectedCamera] < 0.01f)
+                        {
+                            overrideCameraFarClips[selectedCamera] = 0.01f;
+                        }
                     }
                 }
             }
