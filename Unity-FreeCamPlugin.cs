@@ -51,8 +51,8 @@ namespace Unity_FreeCam
 
         private static int selectedCameraIndex = 0;
 
-        private static float moveSpeed = 1.0f;
-        private static float rotationSpeed = 1.0f;
+        private static float moveSpeed = 5.0f;
+        private static float rotationSpeed = 75.0f;
 
         private static bool freecamActive = false;
         private static bool gameFrozen = false;
