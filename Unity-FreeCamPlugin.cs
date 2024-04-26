@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using BepInEx;
@@ -11,9 +12,9 @@ namespace Unity_FreeCam
 {
     [BepInPlugin(GUID, "Unity-FreeCam", Version)]
     public sealed class FreeCamPlugin : BaseUnityPlugin
-    { 
+    {
         public const string GUID = "TollyH.Unity-FreeCam";
-        public const string Version = "1.0.0";
+        public const string Version = "1.1.0";
 
         private static new ManualLogSource Logger;
 
@@ -81,7 +82,15 @@ namespace Unity_FreeCam
 
         public void Start()
         {
-            _ = Harmony.CreateAndPatchAll(typeof(FreeCamPlugin));
+            Harmony harmony = new Harmony(GUID);
+            harmony.PatchAll(typeof(FreeCamPlugin));
+
+            // The methods for the new input system must only be patched if the Assembly is loaded, otherwise they won't be found
+            if (AppDomain.CurrentDomain.GetAssemblies().Any(a => a.GetName().Name == "Unity.InputSystem"))
+            {
+                Logger.LogDebug("New input system present - patching additional methods");
+                harmony.PatchAll(typeof(NewInputSystemPatches));
+            }
         }
 
         public void Awake()
@@ -243,7 +252,7 @@ namespace Unity_FreeCam
             processingInput = true;
             try
             {
-                if (Input.GetKeyDown(configToggleFreecamKey.Value))
+                if (UnityInput.Current.GetKeyDown(configToggleFreecamKey.Value))
                 {
                     freecamActive = !freecamActive;
                     Logger.LogMessage($"FreeCam is now {(freecamActive ? "enabled" : "disabled")}");
@@ -254,7 +263,7 @@ namespace Unity_FreeCam
                     return;
                 }
 
-                if (Input.GetKeyDown(configSelectCameraKey.Value))
+                if (UnityInput.Current.GetKeyDown(configSelectCameraKey.Value))
                 {
                     if (Camera.allCamerasCount == 0)
                     {
@@ -267,12 +276,12 @@ namespace Unity_FreeCam
                     }
                 }
 
-                if (Input.GetKeyDown(configListCamerasKey.Value))
+                if (UnityInput.Current.GetKeyDown(configListCamerasKey.Value))
                 {
                     LogCameraList();
                 }
 
-                if (Input.GetKeyDown(configToggleGameFreezeKey.Value))
+                if (UnityInput.Current.GetKeyDown(configToggleGameFreezeKey.Value))
                 {
                     gameFrozen = !gameFrozen;
                     if (!gameFrozen)
@@ -286,7 +295,7 @@ namespace Unity_FreeCam
                     Logger.LogMessage($"Game is now {(gameFrozen ? "frozen" : "un-frozen")}");
                 }
 
-                if (Input.GetKeyDown(configToggleUIVisibilityKey.Value))
+                if (UnityInput.Current.GetKeyDown(configToggleUIVisibilityKey.Value))
                 {
                     hideUI = !hideUI;
                     if (hideUI)
@@ -307,19 +316,19 @@ namespace Unity_FreeCam
                     Logger.LogMessage($"UI is now {(hideUI ? "hidden" : "visible")}");
                 }
 
-                if (Input.GetKey(configIncreaseMoveSpeedKey.Value))
+                if (UnityInput.Current.GetKey(configIncreaseMoveSpeedKey.Value))
                 {
                     moveSpeed += moveSpeed * Time.unscaledDeltaTime;
                 }
-                if (Input.GetKey(configDecreaseMoveSpeedKey.Value))
+                if (UnityInput.Current.GetKey(configDecreaseMoveSpeedKey.Value))
                 {
                     moveSpeed -= moveSpeed * Time.unscaledDeltaTime;
                 }
-                if (Input.GetKey(configIncreaseRotationSpeedKey.Value))
+                if (UnityInput.Current.GetKey(configIncreaseRotationSpeedKey.Value))
                 {
                     rotationSpeed += rotationSpeed * Time.unscaledDeltaTime;
                 }
-                if (Input.GetKey(configDecreaseRotationSpeedKey.Value))
+                if (UnityInput.Current.GetKey(configDecreaseRotationSpeedKey.Value))
                 {
                     rotationSpeed -= rotationSpeed * Time.unscaledDeltaTime;
                 }
@@ -329,103 +338,103 @@ namespace Unity_FreeCam
                 {
                     Camera selectedCamera = Camera.allCameras[selectedCameraIndex];
 
-                    if (Input.GetKeyDown(configResetPositionKey.Value))
+                    if (UnityInput.Current.GetKeyDown(configResetPositionKey.Value))
                     {
                         StopPositionControl(selectedCamera);
                     }
-                    if (Input.GetKeyDown(configResetRotationKey.Value))
+                    if (UnityInput.Current.GetKeyDown(configResetRotationKey.Value))
                     {
                         StopRotationControl(selectedCamera);
                     }
-                    if (Input.GetKeyDown(configResetViewKey.Value))
+                    if (UnityInput.Current.GetKeyDown(configResetViewKey.Value))
                     {
                         StopViewControl(selectedCamera);
                     }
 
-                    if (Input.GetKey(configMoveForwardKey.Value))
+                    if (UnityInput.Current.GetKey(configMoveForwardKey.Value))
                     {
                         StartPositionControl(selectedCamera);
                         overrideCameraPositions[selectedCamera] += selectedCamera.transform.TransformDirection(Vector3.forward * Time.unscaledDeltaTime * moveSpeed);
                     }
-                    if (Input.GetKey(configMoveBackwardKey.Value))
+                    if (UnityInput.Current.GetKey(configMoveBackwardKey.Value))
                     {
                         StartPositionControl(selectedCamera);
                         overrideCameraPositions[selectedCamera] += selectedCamera.transform.TransformDirection(Vector3.back * Time.unscaledDeltaTime * moveSpeed);
                     }
-                    if (Input.GetKey(configMoveLeftKey.Value))
+                    if (UnityInput.Current.GetKey(configMoveLeftKey.Value))
                     {
                         StartPositionControl(selectedCamera);
                         overrideCameraPositions[selectedCamera] += selectedCamera.transform.TransformDirection(Vector3.left * Time.unscaledDeltaTime * moveSpeed);
                     }
-                    if (Input.GetKey(configMoveRightKey.Value))
+                    if (UnityInput.Current.GetKey(configMoveRightKey.Value))
                     {
                         StartPositionControl(selectedCamera);
                         overrideCameraPositions[selectedCamera] += selectedCamera.transform.TransformDirection(Vector3.right * Time.unscaledDeltaTime * moveSpeed);
                     }
-                    if (Input.GetKey(configMoveUpKey.Value))
+                    if (UnityInput.Current.GetKey(configMoveUpKey.Value))
                     {
                         StartPositionControl(selectedCamera);
                         overrideCameraPositions[selectedCamera] += selectedCamera.transform.TransformDirection(Vector3.up * Time.unscaledDeltaTime * moveSpeed);
                     }
-                    if (Input.GetKey(configMoveDownKey.Value))
+                    if (UnityInput.Current.GetKey(configMoveDownKey.Value))
                     {
                         StartPositionControl(selectedCamera);
                         overrideCameraPositions[selectedCamera] += selectedCamera.transform.TransformDirection(Vector3.down * Time.unscaledDeltaTime * moveSpeed);
                     }
 
-                    if (Input.GetKey(configRotatePitchForwardKey.Value))
+                    if (UnityInput.Current.GetKey(configRotatePitchForwardKey.Value))
                     {
                         StartRotationControl(selectedCamera);
                         Vector3 currentEuler = overrideCameraRotations[selectedCamera].Value.eulerAngles;
                         overrideCameraRotations[selectedCamera] = Quaternion.Euler(currentEuler.x - (Time.unscaledDeltaTime * rotationSpeed), currentEuler.y, currentEuler.z);
                     }
-                    if (Input.GetKey(configRotatePitchBackwardKey.Value))
+                    if (UnityInput.Current.GetKey(configRotatePitchBackwardKey.Value))
                     {
                         StartRotationControl(selectedCamera);
                         Vector3 currentEuler = overrideCameraRotations[selectedCamera].Value.eulerAngles;
                         overrideCameraRotations[selectedCamera] = Quaternion.Euler(currentEuler.x + (Time.unscaledDeltaTime * rotationSpeed), currentEuler.y, currentEuler.z);
                     }
-                    if (Input.GetKey(configRotateYawLeftKey.Value))
+                    if (UnityInput.Current.GetKey(configRotateYawLeftKey.Value))
                     {
                         StartRotationControl(selectedCamera);
                         Vector3 currentEuler = overrideCameraRotations[selectedCamera].Value.eulerAngles;
                         overrideCameraRotations[selectedCamera] = Quaternion.Euler(currentEuler.x, currentEuler.y - (Time.unscaledDeltaTime * rotationSpeed), currentEuler.z);
                     }
-                    if (Input.GetKey(configRotateYawRightKey.Value))
+                    if (UnityInput.Current.GetKey(configRotateYawRightKey.Value))
                     {
                         StartRotationControl(selectedCamera);
                         Vector3 currentEuler = overrideCameraRotations[selectedCamera].Value.eulerAngles;
                         overrideCameraRotations[selectedCamera] = Quaternion.Euler(currentEuler.x, currentEuler.y + (Time.unscaledDeltaTime * rotationSpeed), currentEuler.z);
                     }
-                    if (Input.GetKey(configRotateRollCounterClockwiseKey.Value))
+                    if (UnityInput.Current.GetKey(configRotateRollCounterClockwiseKey.Value))
                     {
                         StartRotationControl(selectedCamera);
                         Vector3 currentEuler = overrideCameraRotations[selectedCamera].Value.eulerAngles;
                         overrideCameraRotations[selectedCamera] = Quaternion.Euler(currentEuler.x, currentEuler.y, currentEuler.z + (Time.unscaledDeltaTime * rotationSpeed));
                     }
-                    if (Input.GetKey(configRotateRollClockwiseKey.Value))
+                    if (UnityInput.Current.GetKey(configRotateRollClockwiseKey.Value))
                     {
                         StartRotationControl(selectedCamera);
                         Vector3 currentEuler = overrideCameraRotations[selectedCamera].Value.eulerAngles;
                         overrideCameraRotations[selectedCamera] = Quaternion.Euler(currentEuler.x, currentEuler.y, currentEuler.z - (Time.unscaledDeltaTime * rotationSpeed));
                     }
 
-                    if (Input.GetKey(configIncreaseFovKey.Value))
+                    if (UnityInput.Current.GetKey(configIncreaseFovKey.Value))
                     {
                         StartViewControl(selectedCamera);
                         overrideCameraFovs[selectedCamera] += Time.unscaledDeltaTime * rotationSpeed;
                     }
-                    if (Input.GetKey(configDecreaseFovKey.Value))
+                    if (UnityInput.Current.GetKey(configDecreaseFovKey.Value))
                     {
                         StartViewControl(selectedCamera);
                         overrideCameraFovs[selectedCamera] -= Time.unscaledDeltaTime * rotationSpeed;
                     }
-                    if (Input.GetKey(configIncreaseNearClipKey.Value))
+                    if (UnityInput.Current.GetKey(configIncreaseNearClipKey.Value))
                     {
                         StartViewControl(selectedCamera);
                         overrideCameraNearClips[selectedCamera] += Time.unscaledDeltaTime * moveSpeed;
                     }
-                    if (Input.GetKey(configDecreaseNearClipKey.Value))
+                    if (UnityInput.Current.GetKey(configDecreaseNearClipKey.Value))
                     {
                         StartViewControl(selectedCamera);
                         overrideCameraNearClips[selectedCamera] -= Time.unscaledDeltaTime * moveSpeed;
@@ -434,12 +443,12 @@ namespace Unity_FreeCam
                             overrideCameraNearClips[selectedCamera] = 0.01f;
                         }
                     }
-                    if (Input.GetKey(configIncreaseFarClipKey.Value))
+                    if (UnityInput.Current.GetKey(configIncreaseFarClipKey.Value))
                     {
                         StartViewControl(selectedCamera);
                         overrideCameraFarClips[selectedCamera] += Time.unscaledDeltaTime * moveSpeed;
                     }
-                    if (Input.GetKey(configDecreaseFarClipKey.Value))
+                    if (UnityInput.Current.GetKey(configDecreaseFarClipKey.Value))
                     {
                         StartViewControl(selectedCamera);
                         overrideCameraFarClips[selectedCamera] -= Time.unscaledDeltaTime * moveSpeed;
@@ -520,6 +529,27 @@ namespace Unity_FreeCam
                 return false;
             }
             return true;
+        }
+
+        public static class NewInputSystemPatches
+        {
+            [HarmonyPrefix]
+            [HarmonyPatch("UnityEngine.InputSystem.Controls.ButtonControl, Unity.InputSystem", "IsValueConsideredPressed")]
+            [HarmonyPatch("UnityEngine.InputSystem.Controls.ButtonControl, Unity.InputSystem", "isPressed", MethodType.Getter)]
+            [HarmonyPatch("UnityEngine.InputSystem.Controls.ButtonControl, Unity.InputSystem", "wasPressedThisFrame", MethodType.Getter)]
+            [HarmonyPatch("UnityEngine.InputSystem.InputAction, Unity.InputSystem", "IsPressed")]
+            [HarmonyPatch("UnityEngine.InputSystem.InputAction, Unity.InputSystem", "IsInProgress")]
+            [HarmonyPatch("UnityEngine.InputSystem.InputAction, Unity.InputSystem", "WasPressedThisFrame")]
+            [HarmonyPatch("UnityEngine.InputSystem.InputAction, Unity.InputSystem", "WasPerformedThisFrame")]
+            public static bool OverrideNewKeybinds(ref bool __result)
+            {
+                if (freecamActive && !processingInput)
+                {
+                    __result = false;
+                    return false;
+                }
+                return true;
+            }
         }
 
         public static string GetFullHierarchyPath(GameObject gameObject)

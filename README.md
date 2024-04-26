@@ -1,6 +1,6 @@
 # Unity FreeCam
 
-Unity BepInEx plugin for enabling free control over in-game cameras.
+Unity BepInEx plugin for enabling free control over in-game cameras, with support for both the legacy and new input system.
 
 ## Contents
 
@@ -17,9 +17,6 @@ Unity BepInEx plugin for enabling free control over in-game cameras.
 ## How to Use
 
 This plugin requires [BepInEx](https://github.com/BepInEx/BepInEx/releases/tag/v5.4.22) (ideally version `5.4.22`) to be installed in the target game. The default bindings for the keys mentioned in this section can be found below.
-
-> [!IMPORTANT]
-> Games using Unity's new input system are currently not supported.
 
 ### Toggling the Plugin
 
