@@ -269,6 +269,7 @@ namespace Unity_FreeCam
             overrideCameraOrthographicSize[selectedCamera] = null;
             overrideCameraNearClips[selectedCamera] = null;
             overrideCameraFarClips[selectedCamera] = null;
+            overrideCameraOrthographic[selectedCamera] = null;
             if (originalCameraFovs.TryGetValue(selectedCamera, out float fov))
             {
                 selectedCamera.fieldOfView = fov;
