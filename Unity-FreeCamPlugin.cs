@@ -18,6 +18,8 @@ namespace Unity_FreeCam
 
         private static new ManualLogSource Logger;
 
+        private static ConfigEntry<bool> configDisableControls;
+
         private static ConfigEntry<KeyCode> configPluginUIShowKey;
         private static ConfigEntry<KeyCode> configToggleFreecamKey;
         private static ConfigEntry<KeyCode> configSelectCameraKey;
@@ -42,12 +44,14 @@ namespace Unity_FreeCam
         private static ConfigEntry<KeyCode> configRotateRollCounterClockwiseKey;
         private static ConfigEntry<KeyCode> configRotateRollClockwiseKey;
 
+        // FOV control keys are also used to control the orthographic size of orthographic cameras.
         private static ConfigEntry<KeyCode> configIncreaseFovKey;
         private static ConfigEntry<KeyCode> configDecreaseFovKey;
         private static ConfigEntry<KeyCode> configIncreaseNearClipKey;
         private static ConfigEntry<KeyCode> configDecreaseNearClipKey;
         private static ConfigEntry<KeyCode> configIncreaseFarClipKey;
         private static ConfigEntry<KeyCode> configDecreaseFarClipKey;
+        private static ConfigEntry<KeyCode> configToggleOrthographicKey;
 
         private static ConfigEntry<KeyCode> configIncreaseMoveSpeedKey;
         private static ConfigEntry<KeyCode> configDecreaseMoveSpeedKey;
@@ -57,7 +61,7 @@ namespace Unity_FreeCam
         private static int selectedCameraIndex = 0;
 
         private static float moveSpeed = 5.0f;
-        private static float rotationSpeed = 75.0f;
+        private static float rotationSpeed = 90.0f;
 
         private static bool freecamActive = false;
         private static bool gameFrozen = false;
@@ -70,14 +74,18 @@ namespace Unity_FreeCam
         private static readonly Dictionary<Camera, Vector3> originalCameraPositions = new Dictionary<Camera, Vector3>();
         private static readonly Dictionary<Camera, Quaternion> originalCameraRotations = new Dictionary<Camera, Quaternion>();
         private static readonly Dictionary<Camera, float> originalCameraFovs = new Dictionary<Camera, float>();
+        private static readonly Dictionary<Camera, float> originalCameraOrthographicSize = new Dictionary<Camera, float>();
         private static readonly Dictionary<Camera, float> originalCameraNearClips = new Dictionary<Camera, float>();
         private static readonly Dictionary<Camera, float> originalCameraFarClips = new Dictionary<Camera, float>();
+        private static readonly Dictionary<Camera, bool> originalCameraOrthographic = new Dictionary<Camera, bool>();
 
         private static readonly Dictionary<Camera, Vector3?> overrideCameraPositions = new Dictionary<Camera, Vector3?>();
         private static readonly Dictionary<Camera, Quaternion?> overrideCameraRotations = new Dictionary<Camera, Quaternion?>();
         private static readonly Dictionary<Camera, float?> overrideCameraFovs = new Dictionary<Camera, float?>();
+        private static readonly Dictionary<Camera, float?> overrideCameraOrthographicSize = new Dictionary<Camera, float?>();
         private static readonly Dictionary<Camera, float?> overrideCameraNearClips = new Dictionary<Camera, float?>();
         private static readonly Dictionary<Camera, float?> overrideCameraFarClips = new Dictionary<Camera, float?>();
+        private static readonly Dictionary<Camera, bool?> overrideCameraOrthographic = new Dictionary<Camera, bool?>();
 
         private static List<Canvas> disabledCanvases = new List<Canvas>();
 
@@ -102,6 +110,8 @@ namespace Unity_FreeCam
 
             // Show the plugin UI window
             gui = gameObject.AddComponent<FreeCamIMGUI>();
+
+            configDisableControls = Config.Bind("General", "Disable Controls", true, "Disable game controls while in FreeCam");
 
             configPluginUIShowKey = Config.Bind("Keyboard Shortcuts - Plugin State", "Show Plugin UI", KeyCode.Pause);
             configToggleFreecamKey = Config.Bind("Keyboard Shortcuts - Plugin State", "Toggle FreeCam", KeyCode.KeypadMultiply);
@@ -133,6 +143,7 @@ namespace Unity_FreeCam
             configDecreaseNearClipKey = Config.Bind("Keyboard Shortcuts - Camera View", "Decrease Near Clip Plane", KeyCode.Z);
             configIncreaseFarClipKey = Config.Bind("Keyboard Shortcuts - Camera View", "Increase Far Clip Plane", KeyCode.V);
             configDecreaseFarClipKey = Config.Bind("Keyboard Shortcuts - Camera View", "Decrease Far Clip Plane", KeyCode.C);
+            configToggleOrthographicKey = Config.Bind("Keyboard Shortcuts - Camera View", "Toggle Orthographic View", KeyCode.O);
 
             configIncreaseMoveSpeedKey = Config.Bind("Keyboard Shortcuts - Speed Control", "Increase Movement Speed", KeyCode.R);
             configDecreaseMoveSpeedKey = Config.Bind("Keyboard Shortcuts - Speed Control", "Decrease Movement Speed", KeyCode.F);
@@ -163,6 +174,10 @@ namespace Unity_FreeCam
                 {
                     message += " (overriding fov)";
                 }
+                if (overrideCameraOrthographicSize.TryGetValue(camera, out float? orthographicSize) && orthographicSize != null)
+                {
+                    message += " (overriding orthographic size)";
+                }
                 if (overrideCameraNearClips.TryGetValue(camera, out float? nearClip) && nearClip != null)
                 {
                     message += " (overriding near clip plane)";
@@ -170,6 +185,10 @@ namespace Unity_FreeCam
                 if (overrideCameraFarClips.TryGetValue(camera, out float? farClip) && farClip != null)
                 {
                     message += " (overriding far clip plane)";
+                }
+                if (overrideCameraOrthographic.TryGetValue(camera, out bool? orthographic) && orthographic != null)
+                {
+                    message += " (overriding orthographic)";
                 }
             }
             Logger.LogMessage(message);
@@ -204,6 +223,11 @@ namespace Unity_FreeCam
                 originalCameraFovs[selectedCamera] = selectedCamera.fieldOfView;
                 overrideCameraFovs[selectedCamera] = selectedCamera.fieldOfView;
             }
+            if (!overrideCameraOrthographicSize.ContainsKey(selectedCamera) || overrideCameraOrthographicSize[selectedCamera] == null)
+            {
+                originalCameraOrthographicSize[selectedCamera] = selectedCamera.orthographicSize;
+                overrideCameraOrthographicSize[selectedCamera] = selectedCamera.orthographicSize;
+            }
             if (!overrideCameraNearClips.ContainsKey(selectedCamera) || overrideCameraNearClips[selectedCamera] == null)
             {
                 originalCameraNearClips[selectedCamera] = selectedCamera.nearClipPlane;
@@ -213,6 +237,11 @@ namespace Unity_FreeCam
             {
                 originalCameraFarClips[selectedCamera] = selectedCamera.farClipPlane;
                 overrideCameraFarClips[selectedCamera] = selectedCamera.farClipPlane;
+            }
+            if (!overrideCameraOrthographic.ContainsKey(selectedCamera) || overrideCameraOrthographic[selectedCamera] == null)
+            {
+                originalCameraOrthographic[selectedCamera] = selectedCamera.orthographic;
+                overrideCameraOrthographic[selectedCamera] = selectedCamera.orthographic;
             }
         }
 
@@ -237,11 +266,17 @@ namespace Unity_FreeCam
         private static void StopViewControl(Camera selectedCamera)
         {
             overrideCameraFovs[selectedCamera] = null;
+            overrideCameraOrthographicSize[selectedCamera] = null;
             overrideCameraNearClips[selectedCamera] = null;
             overrideCameraFarClips[selectedCamera] = null;
+            overrideCameraOrthographic[selectedCamera] = null;
             if (originalCameraFovs.TryGetValue(selectedCamera, out float fov))
             {
                 selectedCamera.fieldOfView = fov;
+            }
+            if (originalCameraOrthographicSize.TryGetValue(selectedCamera, out float orthographicSize))
+            {
+                selectedCamera.orthographicSize = orthographicSize;
             }
             if (originalCameraNearClips.TryGetValue(selectedCamera, out float nearClip))
             {
@@ -250,6 +285,10 @@ namespace Unity_FreeCam
             if (originalCameraFarClips.TryGetValue(selectedCamera, out float farClip))
             {
                 selectedCamera.farClipPlane = farClip;
+            }
+            if (originalCameraOrthographic.TryGetValue(selectedCamera, out bool orthographic))
+            {
+                selectedCamera.orthographic = orthographic;
             }
         }
 
@@ -330,19 +369,19 @@ namespace Unity_FreeCam
 
                 if (UnityInput.Current.GetKey(configIncreaseMoveSpeedKey.Value))
                 {
-                    moveSpeed += moveSpeed * Time.unscaledDeltaTime;
+                    moveSpeed *= Mathf.Pow(2, Time.unscaledDeltaTime);
                 }
                 if (UnityInput.Current.GetKey(configDecreaseMoveSpeedKey.Value))
                 {
-                    moveSpeed -= moveSpeed * Time.unscaledDeltaTime;
+                    moveSpeed /= Mathf.Pow(2, Time.unscaledDeltaTime);
                 }
                 if (UnityInput.Current.GetKey(configIncreaseRotationSpeedKey.Value))
                 {
-                    rotationSpeed += rotationSpeed * Time.unscaledDeltaTime;
+                    rotationSpeed *= Mathf.Pow(2, Time.unscaledDeltaTime);
                 }
                 if (UnityInput.Current.GetKey(configDecreaseRotationSpeedKey.Value))
                 {
-                    rotationSpeed -= rotationSpeed * Time.unscaledDeltaTime;
+                    rotationSpeed /= Mathf.Pow(2, Time.unscaledDeltaTime);
                 }
 
                 // Following key-binds need an existing selected camera
@@ -434,12 +473,26 @@ namespace Unity_FreeCam
                     if (UnityInput.Current.GetKey(configIncreaseFovKey.Value))
                     {
                         StartViewControl(selectedCamera);
-                        overrideCameraFovs[selectedCamera] += Time.unscaledDeltaTime * rotationSpeed;
+                        if (selectedCamera.orthographic)
+                        {
+                            overrideCameraOrthographicSize[selectedCamera] *= Mathf.Pow(2, Time.unscaledDeltaTime * rotationSpeed / 90f);
+                        }
+                        else
+                        {
+                            overrideCameraFovs[selectedCamera] *= Mathf.Pow(2, Time.unscaledDeltaTime * rotationSpeed / 90f);
+                        }
                     }
                     if (UnityInput.Current.GetKey(configDecreaseFovKey.Value))
                     {
                         StartViewControl(selectedCamera);
-                        overrideCameraFovs[selectedCamera] -= Time.unscaledDeltaTime * rotationSpeed;
+                        if (selectedCamera.orthographic)
+                        {
+                            overrideCameraOrthographicSize[selectedCamera] /= Mathf.Pow(2, Time.unscaledDeltaTime * rotationSpeed / 90f);
+                        }
+                        else
+                        {
+                            overrideCameraFovs[selectedCamera] /= Mathf.Pow(2, Time.unscaledDeltaTime * rotationSpeed / 90f);
+                        }
                     }
                     if (UnityInput.Current.GetKey(configIncreaseNearClipKey.Value))
                     {
@@ -468,6 +521,11 @@ namespace Unity_FreeCam
                         {
                             overrideCameraFarClips[selectedCamera] = 0.01f;
                         }
+                    }
+                    if (UnityInput.Current.GetKeyDown(configToggleOrthographicKey.Value))
+                    {
+                        StartViewControl(selectedCamera);
+                        overrideCameraOrthographic[selectedCamera] = !overrideCameraOrthographic[selectedCamera];
                     }
                 }
             }
@@ -515,6 +573,10 @@ namespace Unity_FreeCam
                 {
                     camera.fieldOfView = overrideCameraFovs[camera].Value;
                 }
+                if (overrideCameraOrthographicSize.ContainsKey(camera) && overrideCameraOrthographicSize[camera] != null)
+                {
+                    camera.orthographicSize = overrideCameraOrthographicSize[camera].Value;
+                }
                 if (overrideCameraNearClips.ContainsKey(camera) && overrideCameraNearClips[camera] != null)
                 {
                     camera.nearClipPlane = overrideCameraNearClips[camera].Value;
@@ -522,6 +584,10 @@ namespace Unity_FreeCam
                 if (overrideCameraFarClips.ContainsKey(camera) && overrideCameraFarClips[camera] != null)
                 {
                     camera.farClipPlane = overrideCameraFarClips[camera].Value;
+                }
+                if (overrideCameraOrthographic.ContainsKey(camera) && overrideCameraOrthographic[camera] != null)
+                {
+                    camera.orthographic = overrideCameraOrthographic[camera].Value;
                 }
             }
         }
@@ -535,7 +601,7 @@ namespace Unity_FreeCam
         [HarmonyPatch(typeof(Input), nameof(Input.GetKeyUp), typeof(KeyCode))]
         public static bool OverrideKeybinds(ref bool __result)
         {
-            if (freecamActive && !processingInput)
+            if (configDisableControls.Value && freecamActive && !processingInput)
             {
                 __result = false;
                 return false;
@@ -555,7 +621,7 @@ namespace Unity_FreeCam
             [HarmonyPatch("UnityEngine.InputSystem.InputAction, Unity.InputSystem", "WasPerformedThisFrame")]
             public static bool OverrideNewKeybinds(ref bool __result)
             {
-                if (freecamActive && !processingInput)
+                if (configDisableControls.Value && freecamActive && !processingInput)
                 {
                     __result = false;
                     return false;

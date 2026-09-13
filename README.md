@@ -71,12 +71,13 @@ Pressing the `Toggle UI Visibility` key will hide all currently active `Canvas` 
 | Roll Counter-clockwise             | Numpad 7            |
 | Roll Clockwise                     | Numpad 9            |
 | **View**                           |                     |
-| Increase FOV                       | 3                   |
-| Decrease FOV                       | 1                   |
+| Increase FOV/Orthographic Size     | 3                   |
+| Decrease FOV/Orthographic Size     | 1                   |
 | Increase Near Clip Plane           | X                   |
 | Decrease Near Clip Plane           | Z                   |
 | Increase Far Clip Plane            | V                   |
 | Decrease Far Clip Plane            | C                   |
+| Toggle Orthographic View           | O                   |
 | **Speed**                          |                     |
 | Increase Movement Speed            | R                   |
 | Decrease Movement Speed            | F                   |
