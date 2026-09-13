@@ -628,6 +628,13 @@ namespace Unity_FreeCam
                 }
                 return true;
             }
+
+            [HarmonyPrefix]
+            [HarmonyPatch("UnityEngine.InputSystem.InputActionState, Unity.InputSystem", "CallActionListeners")]
+            public static bool StopInputListeners()
+            {
+                return !configDisableControls.Value || !freecamActive || processingInput;
+            }
         }
 
         public static string GetFullHierarchyPath(GameObject gameObject)
