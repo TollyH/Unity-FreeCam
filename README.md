@@ -2,21 +2,16 @@
 
 Unity BepInEx plugin for enabling free control over in-game cameras, with support for both the legacy and new input system.
 
-## Contents
+## Installation
 
-- [Unity FreeCam](#unity-freecam)
-  - [Contents](#contents)
-  - [How to Use](#how-to-use)
-    - [Toggling the Plugin](#toggling-the-plugin)
-    - [Selecting a Camera](#selecting-a-camera)
-    - [Manipulating the Camera](#manipulating-the-camera)
-    - [Freezing the Game](#freezing-the-game)
-    - [Hiding the UI](#hiding-the-ui)
-  - [Default Key Map](#default-key-map)
+1. Install [BepInEx](https://github.com/BepInEx/BepInEx/releases/tag/v5.4.22) in the target game folder (version `5.4.22` is the version that has been tested with).
+2. Run the game with BepInEx installed at least once.
+3. Place `Unity-FreeCam.dll`, downloaded from the [releases page](https://github.com/TollyH/Unity-FreeCam/releases), into the newly created `BepInEx\plugins` folder.
+4. Optionally, after running the game at least once with the plugin installed, you can configure the key-bindings for the plugin in the `BepInEx\config\TollyH.Unity-FreeCam.cfg` file.
 
 ## How to Use
 
-This plugin requires [BepInEx](https://github.com/BepInEx/BepInEx/releases/tag/v5.4.22) (ideally version `5.4.22`) to be installed in the target game. The default bindings for the keys mentioned in this section can be found below.
+The default bindings for the keys mentioned in this section can be found at the bottom of the README.
 
 ### Toggling the Plugin
 
@@ -52,6 +47,7 @@ Pressing the `Toggle UI Visibility` key will hide all currently active `Canvas` 
 | Action                             | Key                 |
 |------------------------------------|---------------------|
 | **Plugin State**                   |                     |
+| Show Plugin UI                     | Pause/Break         |
 | Toggle FreeCam                     | Numpad Multiply (*) |
 | Select Camera                      | Numpad Minus (-)    |
 | List Current Cameras               | Numpad 5            |
