@@ -11,15 +11,16 @@ using UnityEngine;
 namespace Unity_FreeCam
 {
     [BepInPlugin(GUID, "Unity-FreeCam", Version)]
-    public sealed class FreeCamPlugin : BaseUnityPlugin
+    public sealed partial class FreeCamPlugin : BaseUnityPlugin
     {
         public const string GUID = "TollyH.Unity-FreeCam";
-        public const string Version = "1.1.0";
+        public const string Version = "1.2.0";
 
         private static new ManualLogSource Logger;
 
         private static ConfigEntry<bool> configDisableControls;
 
+        private static ConfigEntry<KeyCode> configPluginUIShowKey;
         private static ConfigEntry<KeyCode> configToggleFreecamKey;
         private static ConfigEntry<KeyCode> configSelectCameraKey;
         private static ConfigEntry<KeyCode> configListCamerasKey;
@@ -88,6 +89,8 @@ namespace Unity_FreeCam
 
         private static List<Canvas> disabledCanvases = new List<Canvas>();
 
+        private static FreeCamIMGUI gui;
+
         public void Start()
         {
             Harmony harmony = new Harmony(GUID);
@@ -105,13 +108,17 @@ namespace Unity_FreeCam
         {
             Logger = base.Logger;
 
+            // Show the plugin UI window
+            gui = gameObject.AddComponent<FreeCamIMGUI>();
+
             configDisableControls = Config.Bind("General", "Disable Controls", true, "Disable game controls while in FreeCam");
 
+            configPluginUIShowKey = Config.Bind("Keyboard Shortcuts - Plugin State", "Show Plugin UI", KeyCode.Pause);
             configToggleFreecamKey = Config.Bind("Keyboard Shortcuts - Plugin State", "Toggle FreeCam", KeyCode.KeypadMultiply);
             configSelectCameraKey = Config.Bind("Keyboard Shortcuts - Plugin State", "Select Camera", KeyCode.KeypadMinus);
             configListCamerasKey = Config.Bind("Keyboard Shortcuts - Plugin State", "List Cameras", KeyCode.Keypad5);
             configToggleGameFreezeKey = Config.Bind("Keyboard Shortcuts - Plugin State", "Toggle Game Freeze", KeyCode.KeypadPeriod);
-            configToggleUIVisibilityKey = Config.Bind("Keyboard Shortcuts - Plugin State", "Toggle UI Visibility", KeyCode.KeypadPlus);
+            configToggleUIVisibilityKey = Config.Bind("Keyboard Shortcuts - Plugin State", "Toggle Game UI Visibility", KeyCode.KeypadPlus);
             configResetPositionKey = Config.Bind("Keyboard Shortcuts - Plugin State", "Reset Camera Position", KeyCode.KeypadDivide);
             configResetRotationKey = Config.Bind("Keyboard Shortcuts - Plugin State", "Reset Camera Rotation", KeyCode.KeypadDivide);
             configResetViewKey = Config.Bind("Keyboard Shortcuts - Plugin State", "Reset Camera View", KeyCode.KeypadDivide);
@@ -290,6 +297,11 @@ namespace Unity_FreeCam
             processingInput = true;
             try
             {
+                if (UnityInput.Current.GetKeyDown(configPluginUIShowKey.Value))
+                {
+                    gui.ShowWindow = true;
+                }
+
                 if (UnityInput.Current.GetKeyDown(configToggleFreecamKey.Value))
                 {
                     freecamActive = !freecamActive;
