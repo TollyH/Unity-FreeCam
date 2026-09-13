@@ -43,6 +43,7 @@ namespace Unity_FreeCam
         private static ConfigEntry<KeyCode> configRotateRollCounterClockwiseKey;
         private static ConfigEntry<KeyCode> configRotateRollClockwiseKey;
 
+        // FOV control keys are also used to control the orthographic size of orthographic cameras.
         private static ConfigEntry<KeyCode> configIncreaseFovKey;
         private static ConfigEntry<KeyCode> configDecreaseFovKey;
         private static ConfigEntry<KeyCode> configIncreaseNearClipKey;
@@ -459,25 +460,25 @@ namespace Unity_FreeCam
                     if (UnityInput.Current.GetKey(configIncreaseFovKey.Value))
                     {
                         StartViewControl(selectedCamera);
-                        if (!selectedCamera.orthographic)
+                        if (selectedCamera.orthographic)
                         {
-                            overrideCameraFovs[selectedCamera] *= Mathf.Pow(2, Time.unscaledDeltaTime * rotationSpeed / 90f);
+                            overrideCameraOrthographicSize[selectedCamera] *= Mathf.Pow(2, Time.unscaledDeltaTime * rotationSpeed / 90f);
                         }
                         else
                         {
-                            overrideCameraOrthographicSize[selectedCamera] *= Mathf.Pow(2, Time.unscaledDeltaTime * rotationSpeed / 90f);
+                            overrideCameraFovs[selectedCamera] *= Mathf.Pow(2, Time.unscaledDeltaTime * rotationSpeed / 90f);
                         }
                     }
                     if (UnityInput.Current.GetKey(configDecreaseFovKey.Value))
                     {
                         StartViewControl(selectedCamera);
-                        if (!selectedCamera.orthographic)
+                        if (selectedCamera.orthographic)
                         {
-                            overrideCameraFovs[selectedCamera] /= Mathf.Pow(2, Time.unscaledDeltaTime * rotationSpeed / 90f);
+                            overrideCameraOrthographicSize[selectedCamera] /= Mathf.Pow(2, Time.unscaledDeltaTime * rotationSpeed / 90f);
                         }
                         else
                         {
-                            overrideCameraOrthographicSize[selectedCamera] /= Mathf.Pow(2, Time.unscaledDeltaTime * rotationSpeed / 90f);
+                            overrideCameraFovs[selectedCamera] /= Mathf.Pow(2, Time.unscaledDeltaTime * rotationSpeed / 90f);
                         }
                     }
                     if (UnityInput.Current.GetKey(configIncreaseNearClipKey.Value))
