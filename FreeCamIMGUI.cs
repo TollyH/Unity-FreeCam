@@ -27,7 +27,7 @@ namespace Unity_FreeCam
             {
                 if (ShowWindow)
                 {
-                    windowArea = GUILayout.Window(windowId, windowArea, DrawWindow, $"Unity-FreeCam {Version} by TollyH");
+                    windowArea = GUILayout.Window(windowId, windowArea, DrawWindow, $"Unity-FreeCam {Version}");
                 }
             }
 
@@ -72,6 +72,8 @@ namespace Unity_FreeCam
 
                 GUILayout.EndVertical();
                 GUILayout.EndScrollView();
+
+                GUILayout.Label("https://github.com/TollyH/Unity-FreeCam");
 
                 GUI.DragWindow();
             }
